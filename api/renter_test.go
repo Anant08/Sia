@@ -481,7 +481,7 @@ func TestRenterAsyncDownload(t *testing.T) {
 
 	// download should eventually complete
 	success := false
-	for start := time.Now(); time.Since(start) < 30*time.Second; time.Sleep(time.Millisecond * 10) {
+	for start := time.Now(); time.Since(start) < 90*time.Second; time.Sleep(time.Millisecond * 10) {
 		err = st.getAPI("/renter/downloads", &rdq)
 		if err != nil {
 			t.Fatal(err)
