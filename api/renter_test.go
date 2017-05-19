@@ -126,11 +126,11 @@ func waitForDownloadToComplete(t *testing.T, st *serverTester, siapath string, e
 // runDownloadTest uploads a file and downloads it using the specified
 // parameters, verifying that the parameters are applied correctly and the file
 // is downloaded successfully.
-func runDownloadTest(t *testing.T, filesize, offset, length int64, useHttpResp bool) error {
-	ulSiaPath := "test.dat"
+func runDownloadTest(t *testing.T, filesize, offset, length int64, useHttpResp bool, testName string) error {
+	ulSiaPath := testName + ".dat"
 	st, path := setupTestDownload(t, int(filesize), ulSiaPath, true)
 	defer func() {
-		st.server.Close()
+		st.server.panicClose()
 		os.Remove(path)
 	}()
 
@@ -150,7 +150,7 @@ func runDownloadTest(t *testing.T, filesize, offset, length int64, useHttpResp b
 	}
 
 	// Download the original file from the passed offsets.
-	fname := "offsetsinglechunk.dat"
+	fname := testName + "-download.dat"
 	downpath := filepath.Join(st.dir, fname)
 	defer os.Remove(downpath)
 
@@ -275,9 +275,9 @@ func TestValidDownloads(t *testing.T) {
 	}
 
 	for _, params := range testParams {
-		err := runDownloadTest(t, params.filesize, params.offset, params.length, params.useHttpResp)
+		err := runDownloadTest(t, params.filesize, params.offset, params.length, params.useHttpResp, params.testName)
 		if err != nil {
-			t.Fatalf("Test %s failed: %s", params.testName, err.Error())
+			t.Fatalf("%s failed: %s", params.testName, err.Error())
 		}
 	}
 }
